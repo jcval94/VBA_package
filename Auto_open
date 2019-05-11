@@ -1,0 +1,5 @@
+Sub Auto_Open()
+
+Respuesta = MsgBox("Hola Mundo")
+
+End Sub
