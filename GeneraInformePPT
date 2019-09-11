@@ -12,7 +12,7 @@ Sub RUNA()
 GeneraInformePPT1 ("Nombre_Hoja")
 End Sub
 
-Sub GeneraInformePPT1(division As String, Optional ByVal num_sld As Integer = 4) ' ej: division="MET.NORTE"
+Sub GeneraInformePPT1(division As String, Optional ByVal num_sld As Integer = 4) ' ej: division="Zona1"
 
 '''''Crear un vector con los rangos correspondientes a las tablas
 Dim col As New Collection
@@ -76,13 +76,13 @@ arr = toArray(col)
     
     
     'Guardamos la presentación con Fecha de Hoy
-    ppPresentation.SaveAs "BBVA_RedComercial" '+ CStr(Now)
+    ppPresentation.SaveAs "Presentacion_" '+ CStr(Now)
     
     
     
-    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 112", 20, 219, 211)
-    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 113", 20, 219, 211)
-    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 114", 20, 219, 211)
+    'Call Copiar_Grafico("zona2", "Chart 112", 20, 219, 211)
+    'Call Copiar_Grafico("zona2", "Chart 113", 20, 219, 211)
+    'Call Copiar_Grafico("zona2", "Chart 114", 20, 219, 211)
     
     'Call Copiar_Grafico("AUX", "TextBox 3", 4, 219, 351)
     
@@ -188,7 +188,7 @@ End Sub
 
 Private Sub GeneraForma()
     rutaActual = ThisWorkbook.Path
-    rutaPlantilla = rutaActual & "\BBVA Bancomer-AnálisisRedComercial_V0.12.pptx" 'IMPORTANTE La plantilla del informe debe estar en el mismo path que el excel
+    rutaPlantilla = rutaActual & "\Presentacion-Análisis_V0.1.pptx" 'IMPORTANTE La plantilla del informe debe estar en el mismo path que el excel
 
     If ppApp Is Nothing Then Set ppApp = New PowerPoint.Application
     ppApp.Visible = True
