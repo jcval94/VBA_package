@@ -1,0 +1,213 @@
+Dim ppApp As PowerPoint.Application
+Dim ppPresentation As PowerPoint.Presentation
+Dim ppSlide As PowerPoint.Slide
+Dim rutaPlantilla As String
+Dim nombreInforme As String
+Dim fecha As String
+Dim rutaActual As String
+Dim nombreEquipo As String
+
+
+Sub RUNA()
+GeneraInformePPT1 ("Nombre_Hoja")
+End Sub
+
+Sub GeneraInformePPT1(division As String, Optional ByVal num_sld As Integer = 4) ' ej: division="MET.NORTE"
+
+'''''Crear un vector con los rangos correspondientes a las tablas
+Dim col As New Collection
+Dim cell1 As String
+Dim cell2 As String
+Dim cellAbs As String
+Dim cellfinal As String
+Sheets("AUX").Select
+Range("A1").Select
+For i = 1 To num_sld + 1
+    With Sheets("AUX")
+        
+        Range(.Cells(Application.Max(21 * (i - 1), 0) + 1, 1), .Cells(Application.Max(21 * (i - 1), 0) + 1, 1)).Select
+    cell1 = "A" + Split(Selection.Address(columnabsolute:=False), "$")(1)
+    End With
+    Selection.End(xlToRight).Select
+    Selection.End(xlDown).Select
+    cell2 = Selection.Address(columnabsolute:=False)
+    Range(cell1).Offset(20, 4).Select
+    cellAbs = Selection.Address(columnabsolute:=False)
+    If i = 1 Then
+    cellAbs = "E$20"
+    End If
+    cellfinal = "E" + CStr(Application.Min(CInt(Split(cellAbs, "$")(1)), CInt(Split(cellAbs, "$")(1)))) ', CInt(Split(cellAbs, "$")(1))))
+    col.Add (cell1 + ":" + cellfinal)
+Next i
+
+Dim arr() As Variant
+arr = toArray(col)
+
+' NOTA: Necesita habilitar en Herramientas-Referencias las librerias Microsoft PowerPoint Library
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Parametros
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    rutaActual = ThisWorkbook.Path
+    rutaPlantilla = rutaActual & "\BBVA Bancomer-AnálisisRedComercial_V0.12.pptx" 'IMPORTANTE La plantilla del informe debe estar en el mismo path que el excel
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Apertura el ppt y comprobaciones
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    'Se abre el Powerpoint si no estuviera abierto
+    If ppApp Is Nothing Then Set ppApp = New PowerPoint.Application
+    ppApp.Visible = True
+    
+    'Comprobamos que la presentacion existe y que no este vacia
+    On Error Resume Next
+    Set ppPresentation = ppApp.Presentations.Open(rutaPlantilla)
+    On Error GoTo 0
+    If ppPresentation Is Nothing Then
+     MsgBox "La plantilla " & rutaPlantilla & " no se encuentra en la ruta especificada", vbCritical
+            Exit Sub
+    End If
+    
+    'Comprobamos que la presentacion no este vacia
+    If ppPresentation.Slides.Count = 0 Then
+        MsgBox "La plantilla " & rutaPlantilla & " está vacia", vbCritical
+        Exit Sub
+    End If
+    
+    
+    'Guardamos la presentación con Fecha de Hoy
+    ppPresentation.SaveAs "BBVA_RedComercial" '+ CStr(Now)
+    
+    
+    
+    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 112", 20, 219, 211)
+    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 113", 20, 219, 211)
+    'Call Copiar_Grafico("DIV.OCCIDENTE", "Chart 114", 20, 219, 211)
+    
+    'Call Copiar_Grafico("AUX", "TextBox 3", 4, 219, 351)
+    
+    'Nube de puntos División/Sucursal
+    'punto de origen 46, 23
+    Call Copiar_Forma("POT", "FORMAS", 2, 306, 393) '393 fijo
+    'punto de origen  68, 53
+    Call Copiar_Forma("PROD", "FORMAS", 2, 118, 84) '118 fijo
+    'MsgBox division
+    Call Copiar_Grafico(division, "nube", 2, 200 + 24, 180 + 32)
+    
+    
+    Call Copiar_Forma("POT", "FORMAS", 1, 306, 393) '393 fijo
+    'punto de origen  68, 53
+    Call Copiar_Forma("PROD", "FORMAS", 1, 118, 84) '118 fijo
+    
+    Call Copiar_Grafico(division, "nube", 1, 200 + 24, 180 + 32)
+    
+    'Tablas de Sucursales
+    For i = 1 To num_sld + 1
+
+    Call Copiar_Tabla("AUX", CStr(rango), i + 2, 203, 330, 1.03)
+    Next i
+    
+
+    'Call Copiar_Grafico("AUX", "Grafico_Datos", 5, 0, 80)
+
+End Sub
+
+Private Sub Copiar_Tabla(Hoja As String, rango_tabla As String, slide_objetivo As Integer, _
+                            dist_top As Integer, dist_left As Integer, Optional ByVal tam As Long = 1.1)
+                
+        'Copiamos las tablas como imagen
+        Sheets(Hoja).Select
+        Sheets(Hoja).Range(rango_tabla).Select
+        Selection.Copy
+        
+        'Copiamos la grafica
+        Set ppSlide = ppPresentation.Slides(slide_objetivo)
+        ppApp.ActiveWindow.View.GotoSlide slide_objetivo
+        
+        'Pasamos todas las variables
+        With ppSlide.Shapes.PasteSpecial(ppPasteEnhancedMetafile)
+            .ScaleWidth tam, msoFalse
+            '.Align msoAlignRights, msoTrue
+            '.Align msoAlignCenters, msoTrue
+            '.Align msoAlignMiddles, True
+            .IncrementTop (dist_top)
+            .IncrementLeft (dist_left)
+        End With
+
+
+End Sub
+
+
+Private Sub Copiar_Grafico(Hoja As String, nombre_graf As String, hoja_objetivo As Integer, _
+                                dist_top As Integer, dist_left As Integer)
+        
+        'Seleccionamos la grafica octaedro
+
+        Sheets(Hoja).ChartObjects(nombre_graf).Activate
+        ActiveChart.ChartArea.Copy
+        
+        'Copiamos la grafica
+        Set ppSlide = ppPresentation.Slides(hoja_objetivo)
+        ppApp.ActiveWindow.View.GotoSlide hoja_objetivo
+        
+        'Pasamos todas las variables
+        With ppSlide.Shapes.PasteSpecial(ppPasteEnhancedMetafile)
+            '.Align msoAlignLefts, msoTrue
+            '.Align msoAlignCenters, True
+            '.Align msoAlignMiddles, True
+            .IncrementTop (dist_top)
+            .IncrementLeft (dist_left)
+        End With
+
+End Sub
+
+Private Sub Copiar_Forma(nombreforma As String, Hoja As String, hoja_objetivo As Integer, dist_top As Integer, dist_left As Integer)
+        
+        'Seleccionamos la grafica octaedro
+        
+        Sheets(Hoja).Select
+        ActiveSheet.Shapes.Range(Array(nombreforma)).Select
+        'Selection.ShapeRange.Group.Select
+        Selection.Copy
+        'Selection.ShapeRange.Ungroup.Select
+        
+        'Copiamos la grafica
+        Set ppSlide = ppPresentation.Slides(hoja_objetivo)
+        ppApp.ActiveWindow.View.GotoSlide hoja_objetivo
+        
+        'Pasamos todas las variables
+        With ppSlide.Shapes.PasteSpecial(ppPasteEnhancedMetafile)
+            '.Align msoAlignLefts, msoTrue
+            '.Align msoAlignCenters, True
+            '.Align msoAlignMiddles, True
+            .IncrementTop (dist_top)
+            .IncrementLeft (dist_left)
+        End With
+
+End Sub
+
+Private Sub GeneraForma()
+    rutaActual = ThisWorkbook.Path
+    rutaPlantilla = rutaActual & "\BBVA Bancomer-AnálisisRedComercial_V0.12.pptx" 'IMPORTANTE La plantilla del informe debe estar en el mismo path que el excel
+
+    If ppApp Is Nothing Then Set ppApp = New PowerPoint.Application
+    ppApp.Visible = True
+    
+    'Comprobamos que la presentacion existe y que no este vacia
+    On Error Resume Next
+    Set ppPresentation = ppApp.Presentations.Open(rutaPlantilla)
+    On Error GoTo 0
+    If ppPresentation Is Nothing Then
+     MsgBox "La plantilla " & rutaPlantilla & " no se encuentra en la ruta especificada", vbCritical
+            Exit Sub
+    End If
+    
+    'Comprobamos que la presentacion no este vacia
+    If ppPresentation.Slides.Count = 0 Then
+        MsgBox "La plantilla " & rutaPlantilla & " está vacia", vbCritical
+        Exit Sub
+    End If
+    
+    Call Copiar_Forma("UNN", "FORMAS", 3, 203, 203)
+    'tabla de conversión (Mediana,Mediana) en Excel (i,j) en PPT
+End Sub
