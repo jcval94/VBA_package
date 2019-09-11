@@ -1,0 +1,12 @@
+Sub Move()
+With ActiveSheet.UsedRange
+Sheets("AEIOU").Select
+Set c = .Find(Cells(1, 0 + i).Value, LookIn:=xlValues)
+Sheet1.Activate
+'MsgBox c
+If Not c Is Nothing Then
+    ActiveSheet.Range(c.Address).Offset(1, 0).Select
+End If
+End With
+
+End Sub
