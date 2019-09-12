@@ -1,0 +1,7 @@
+Function colvar(textoBuscado As String) As Integer
+    Range("A1").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Set D = Selection.Find(textoBuscado, LookIn:=xlValues)
+    ActiveSheet.Range(D.Address).Select
+    colvar = Selection.Column
+End Function
