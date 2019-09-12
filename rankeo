@@ -1,0 +1,8 @@
+Sub rankeo()
+    Cells(1, 1).Value = "Rankeo"
+    Cells(2, 1).Value = "=RANK.EQ(F2,F$2:F$21900,0)"
+    Range("A2:A13000").Select
+    Selection.FillDown
+    'Selection.AutoFill Destination:=Range("A2:A13000"), Type:=xlFillDefault
+    'Range("A3:A13000").Select
+End Sub
