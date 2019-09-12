@@ -1,0 +1,16 @@
+Sub FilleoSupInf(Sup As Integer)
+' Rellena una columna a partir del último valor de la columna derecha
+    If Sup = 1 Then
+    ActiveCell.Offset(-1, 0).Select
+    Selection.End(xlToRight).Select
+    ActiveCell.Offset(1, 0).Select
+    Range(Selection, Selection.End(xlToLeft)).Select
+    Selection.FillRight
+    Else
+    ActiveCell.Offset(1, 0).Select
+    Selection.End(xlToRight).Select
+    ActiveCell.Offset(-1, 0).Select
+    Range(Selection, Selection.End(xlToLeft)).Select
+    Selection.FillRight
+    End If
+End Sub
