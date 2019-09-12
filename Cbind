@@ -1,0 +1,22 @@
+Sub Cbind(sCelda As String)
+' Macro6 Macro
+    Range("I3").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToLeft)).Select
+    Selection.Copy
+    Range(sCelda).Select
+    ActiveSheet.Paste
+    Application.CutCopyMode = False
+    ' Edita la tabla ya creada
+    Range("I3").Select
+    ActiveCell.Offset(-1, -2).Select
+    Selection.Copy
+    Range(sCelda).Select
+    ActiveCell.Offset(0, -1).Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Application.CutCopyMode = False
+    FilleoDerechoIzq (1)
+    Range("I3").Select
+    
+End Sub
