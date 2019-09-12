@@ -1,0 +1,23 @@
+Function contenido() As Integer
+contenido = 1
+Dim Datos As Long
+Dim blancos As Integer
+    Range("A1").Select
+    Selection.End(xlToRight).Select
+    Selection.End(xlDown).Select
+    'ActiveCell.SpecialCells(xlLastCell).Select
+    rango = "A1" + ":" + ActiveCell.Address(RowAbsolute:=False, columnabsolute:=False)
+    'cuento las celdas con datos y si son menos del 60% se detiene
+    On Error Resume Next
+    If Range(rango).SpecialCells(xlCellTypeBlanks).Count > 0 Then
+    Datos = Range(rango).Count
+    blancos = Range(rango).SpecialCells(xlCellTypeBlanks).Count
+    Range("A1").Select
+    If (Datos - blancos) / Range(rango).Count < 0.6 Then
+    MsgBox "Más del 40% de tu información es nula"
+    ' si si entonces Stop si no entonces nada
+    contenido = 0
+    End If
+    End If
+    
+End Function
