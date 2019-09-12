@@ -1,0 +1,16 @@
+Sub FilleoDerechoIzq(Derecho As Integer)
+' Rellena una columna a partir del último valor de la columna derecha
+    If Derecho = 1 Then
+    ActiveCell.Offset(0, 1).Select
+    Selection.End(xlDown).Select
+    ActiveCell.Offset(0, -1).Select
+    Range(Selection, Selection.End(xlUp)).Select
+    Selection.FillDown
+    Else
+    ActiveCell.Offset(0, -1).Select
+    Selection.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    Range(Selection, Selection.End(xlUp)).Select
+    Selection.FillDown
+    End If
+End Sub
