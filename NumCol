@@ -1,0 +1,25 @@
+Function NumCol() As Integer
+    NumCol = 1
+    Sheet1.Activate
+    Range("A1").Select
+    Selection.End(xlToRight).Select
+    'MsgBox Selection.Column
+    Dim numcl As Integer
+    numcl = Selection.Column
+    If numcl > 55 Then
+    MsgBox "Hay más variables de las necesarias, por favor elimine aquellas que extra para continuar"
+    If numcl > 100000 Then
+    MsgBox "No hay columnas en la hoja de cálculo, por favor revise el fichero de entrada" & vbCrLf & _
+    "Si el fichero tiene más de una hoja, asegúrese que ha sido guardado en la hoja a importar"
+    NumCol = 0
+    Exit Function
+    End If
+    NumCol = 0
+    End If
+    Range("A1").Select
+    If numcl < 20 Then
+    MsgBox "Las variables son insuficientes o hay un vacío en el nombre de las mismas." & vbCrLf & _
+    "Asegúrate que todas tengan un valor en la cabecera"
+    NumCol = 0
+    End If
+End Function
