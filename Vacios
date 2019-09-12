@@ -1,0 +1,14 @@
+Sub Vacios()
+On Error Resume Next
+Dim sq As String
+    Range("A1").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Dim n As Integer
+    n = Selection.SpecialCells(xlCellTypeBlanks).Count
+    'MsgBox n
+If Not n = 0 Then
+Call Blanks
+End If
+
+End Sub
