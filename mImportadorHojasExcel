@@ -1,0 +1,63 @@
+' Funcion mImportadorHojasExcel que copia los datos de un excel origen al actualmente abierto
+'        wbActual -> Workbook destino datos
+'        sNomPestDatos -> Pestaña origen de los datos
+'        sRutaOrigenDatos -> Ruta que contien el Workbook Origen de los datos
+'        sNomPestActual -> Pestaña destino de los datos
+'        iOpcionCeldas -> Con 1 se seleccionan todos los datos de la hoja
+'                         Con 2 se selecciona desde A1 hasta el tope derecho e inferior
+'
+Sub mImportadorHojasExcel(ByVal wbActual As Workbook, ByVal sNomPestActual As String, _
+        ByVal sRutaOrigenDatos As String, ByVal sNomPestDatos As String, ByVal iOpcionCeldas As Integer)
+    On Error Resume Next
+    'Definir objetos a utilizar
+        Dim wbOrigenDatos As Workbook
+        Dim wsActual As Excel.Worksheet
+        Dim wsOrigenDatos As Excel.Worksheet
+        Dim rngOrigen As Excel.Range
+        Dim rngDestino As Excel.Range
+    
+    'Iniciamos el excel actual
+        'Set wbActual = wbActual.Activate
+         
+    'Abrimos el excel de datos
+        Set wbOrigenDatos = Workbooks.Open(sRutaOrigenDatos)
+        'Sheet1.Activate
+        sNomPestDatos = ActiveSheet.Name
+        'MsgBox sNomPestDatos
+     'Indicar las hojas de origen y destino
+     
+        Set wsActual = wbActual.Worksheets(sNomPestActual)
+        Set wsOrigenDatos = wbOrigenDatos.Worksheets(sNomPestDatos)
+
+    'Indicar la celda de origen y destino
+        Const celdaOrigen = "A1"
+        Const celdaDestino = "A1"
+     
+    'Inicializar los rangos de origen y destino
+        Set rngOrigen = wsOrigenDatos.Range(celdaOrigen)
+        Set rngDestino = wsActual.Range(celdaDestino)
+     
+    'Seleccionar rango de celdas origen
+        rngOrigen.Select
+        If iOpcionCeldas = 1 Then
+            Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
+        Else
+            Range(Selection, Selection.End(xlDown)).Select
+            Range(Selection, Selection.End(xlToRight)).Select
+        End If
+    
+    'Copiamos las celdas seleccionadas
+        Selection.Copy
+     
+    'Pegar datos en celda destino
+        wsActual.Activate
+        rngDestino.Select
+        rngDestino.PasteSpecial xlPasteValues
+        Application.CutCopyMode = False
+     
+    'Guardar y cerrar el libro de Excel destino
+        Application.DisplayAlerts = False
+        wbOrigenDatos.Close
+        Application.DisplayAlerts = True
+    
+End Sub
