@@ -1,0 +1,4 @@
+Function AperturaFicheros()
+    ChDir Application.ActiveWorkbook.Path & "\Datos Entrada\"
+AperturaFicheros = Application.GetOpenFilename("Excel 2010 Files (*.xlsx), *.xlsx, Excel Files (*.xls), *.xls, CSV Files (*.csv), *.csv, Text Files (*.txt), *.txt")
+End Function
