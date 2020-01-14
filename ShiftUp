@@ -1,0 +1,10 @@
+Sub ShiftUp()
+'Borrar celdas vacias de una columna
+' Macro1 Macro
+'
+    ActiveCell.Columns("A:A").EntireColumn.Select
+    On Error Resume Next
+    Selection.SpecialCells(xlCellTypeBlanks).Select
+    Selection.Delete Shift:=xlUp
+    Range("A1").Select
+End Sub
